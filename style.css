@@ -1,0 +1,42 @@
+:root {
+  --thumb-w: 56px;
+  --thumb-h: 80px;
+}
+
+body {
+  background-color: #f8f9fa;
+}
+
+.card-thumb {
+  width: var(--thumb-w);
+  height: var(--thumb-h);
+  object-fit: cover;
+  border-radius: .25rem;
+  border: 1px solid rgba(0,0,0,.1);
+  background-color: #fff;
+}
+
+.table td, .table th {
+  vertical-align: middle;
+}
+
+footer {
+  margin-top: 2rem;
+}
+
+.offcanvas {
+  width: 280px;
+}
+
+#alertsContainer {
+  position: sticky;
+  top: 64px;
+  z-index: 1055;
+}
+
+@media (max-width: 575.98px) {
+  :root {
+    --thumb-w: 44px;
+    --thumb-h: 64px;
+  }
+}

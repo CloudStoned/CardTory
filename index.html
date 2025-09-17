@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Card Inventory System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
+    <div class="container-fluid">
+      <button class="btn btn-outline-light me-2 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+        <i class="bi bi-list"></i>
+      </button>
+      <a class="navbar-brand fw-semibold" href="#" data-section="inventorySection">Card Inventory</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="#" data-section="inventorySection">Inventory</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" id="navAddCard" data-bs-toggle="modal" data-bs-target="#cardFormModal">Add Card</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-section="reportsSection">Reports</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" data-section="settingsSection">Settings</a></li>
+        </ul>
+        <form class="d-flex" role="search" onsubmit="event.preventDefault();">
+          <input class="form-control form-control-sm me-2" id="navbarSearchInput" type="search" placeholder="Search cards..." aria-label="Search">
+          <button class="btn btn-light btn-sm" type="button" id="navbarSearchBtn"><i class="bi bi-search"></i></button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Offcanvas Sidebar (mobile) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Browse</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <nav>
+        <div class="mb-3">
+          <a href="#" class="list-group-item list-group-item-action py-2" data-filter-all>All Cards</a>
+        </div>
+        <div class="accordion" id="sidebarAccordionMobile">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#byTypeMobile" aria-expanded="false">By Type</button>
+            </h2>
+            <div id="byTypeMobile" class="accordion-collapse collapse">
+              <div class="list-group list-group-flush" id="sidebar-types-mobile"></div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bySetMobile" aria-expanded="false">By Set</button>
+            </h2>
+            <div id="bySetMobile" class="accordion-collapse collapse">
+              <div class="list-group list-group-flush" id="sidebar-sets-mobile"></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Desktop Sidebar -->
+      <aside class="col-lg-3 col-xl-2 d-none d-lg-block border-end bg-light min-vh-100 pt-4" style="margin-top: 56px;">
+        <div class="p-3">
+          <h6 class="text-uppercase text-muted mb-3">Browse</h6>
+          <div class="list-group mb-3">
+            <a href="#" class="list-group-item list-group-item-action py-2" data-filter-all>All Cards</a>
+          </div>
+          <div class="accordion" id="sidebarAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingType">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#byType" aria-expanded="false" aria-controls="byType">
+                  By Type
+                </button>
+              </h2>
+              <div id="byType" class="accordion-collapse collapse" aria-labelledby="headingType">
+                <div class="list-group list-group-flush" id="sidebar-types"></div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingSet">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bySet" aria-expanded="false" aria-controls="bySet">
+                  By Set
+                </button>
+              </h2>
+              <div id="bySet" class="accordion-collapse collapse" aria-labelledby="headingSet">
+                <div class="list-group list-group-flush" id="sidebar-sets"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="col-12 col-lg-9 col-xl-10 pt-4" style="margin-top:56px;">
+        <!-- Alerts -->
+        <div class="container-fluid">
+          <div id="alertsContainer" class="position-relative"></div>
+        </div>
+
+        <!-- Inventory Section -->
+        <section id="inventorySection">
+          <div class="container-fluid">
+            <!-- Toolbar -->
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="row g-2 align-items-end">
+                  <div class="col-12 col-md-6 col-xl-3">
+                    <label for="mainSearchInput" class="form-label small mb-1">Search</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-search"></i></span>
+                      <input type="text" id="mainSearchInput" class="form-control" placeholder="Search by name, edition, ID...">
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-3 col-xl-2">
+                    <label for="filterType" class="form-label small mb-1">Type</label>
+                    <select id="filterType" class="form-select">
+                      <option value="">All</option>
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-3 col-xl-2">
+                    <label for="filterRarity" class="form-label small mb-1">Rarity</label>
+                    <select id="filterRarity" class="form-select">
+                      <option value="">All</option>
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-3 col-xl-2">
+                    <label for="filterSet" class="form-label small mb-1">Set</label>
+                    <select id="filterSet" class="form-select">
+                      <option value="">All</option>
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-3 col-xl-2">
+                    <label for="sortBy" class="form-label small mb-1">Sort</label>
+                    <select id="sortBy" class="form-select">
+                      <option value="name:asc">Name A-Z</option>
+                      <option value="name:desc">Name Z-A</option>
+                      <option value="rarity:desc">Rarity High-Low</option>
+                      <option value="rarity:asc">Rarity Low-High</option>
+                      <option value="marketValue:desc">Value High-Low</option>
+                      <option value="marketValue:asc">Value Low-High</option>
+                      <option value="quantity:desc">Qty High-Low</option>
+                      <option value="quantity:asc">Qty Low-High</option>
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-3 col-xl-1">
+                    <label for="itemsPerPage" class="form-label small mb-1">Per page</label>
+                    <select id="itemsPerPage" class="form-select">
+                      <option>10</option>
+                      <option>25</option>
+                      <option>50</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12 d-flex flex-wrap gap-2 justify-content-md-end mt-2">
+                    <button class="btn btn-outline-secondary" id="btnImport"><i class="bi bi-file-earmark-arrow-up me-1"></i>Import CSV</button>
+                    <button class="btn btn-outline-secondary" id="btnExport"><i class="bi bi-file-earmark-arrow-down me-1"></i>Export CSV</button>
+                    <button class="btn btn-outline-info" id="btnRefreshPrices" data-bs-toggle="tooltip" data-bs-title="Simulate fetching latest market prices"><i class="bi bi-arrow-clockwise me-1"></i>Refresh Prices</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cardFormModal"><i class="bi bi-plus-lg me-1"></i>Add Card</button>
+                    <input type="file" id="importFileInput" accept=".csv" class="d-none">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Card Inventory</span>
+                <small class="text-muted"><span id="resultCount">0</span> results</small>
+              </div>
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th class="d-none d-md-table-cell">Type</th>
+                      <th class="d-none d-md-table-cell">Rarity</th>
+                      <th class="d-none d-lg-table-cell">Edition</th>
+                      <th class="d-none d-lg-table-cell">Condition</th>
+                      <th>Qty</th>
+                      <th class="text-end d-none d-sm-table-cell">Value</th>
+                      <th class="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cardsTbody">
+                    <!-- Rows injected -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                  <div><small class="text-muted">Showing <span id="pageInfo">0-0</span> of <span id="totalItems">0</span></small></div>
+                  <nav>
+                    <ul class="pagination pagination-sm mb-0" id="pagination">
+                      <!-- pages -->
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reportsSection" class="d-none">
+          <div class="container-fluid">
+            <div class="row g-3">
+              <div class="col-12 col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <div class="text-muted small">Total Cards (unique)</div>
+                        <div class="display-6" id="reportTotalUnique">0</div>
+                      </div>
+                      <i class="bi bi-collection fs-1 text-primary"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <div class="text-muted small">Total Quantity</div>
+                        <div class="display-6" id="reportTotalQuantity">0</div>
+                      </div>
+                      <i class="bi bi-stack fs-1 text-success"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        <div class="text-muted small">Inventory Value</div>
+                        <div class="display-6" id="reportTotalValue">$0</div>
+                      </div>
+                      <i class="bi bi-currency-dollar fs-1 text-warning"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-6">
+                <div class="card h-100">
+                  <div class="card-header fw-semibold">Cards by Type</div>
+                  <div class="card-body">
+                    <canvas id="chartByType" height="180"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="card h-100">
+                  <div class="card-header fw-semibold">Cards by Rarity</div>
+                  <div class="card-body">
+                    <canvas id="chartByRarity" height="180"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="card h-100">
+                  <div class="card-header fw-semibold">Inventory Value Over Time</div>
+                  <div class="card-body">
+                    <canvas id="chartValueOverTime" height="120"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settingsSection" class="d-none">
+          <div class="container-fluid">
+            <div class="row g-3">
+              <div class="col-12 col-lg-6">
+                <div class="card">
+                  <div class="card-header fw-semibold">Preferences</div>
+                  <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                      <input class="form-check-input" type="checkbox" id="toggleAutoPrice">
+                      <label class="form-check-label" for="toggleAutoPrice">Auto refresh prices on load</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                      <input class="form-check-input" type="checkbox" id="toggleSaveImages" checked>
+                      <label class="form-check-label" for="toggleSaveImages" data-bs-toggle="tooltip" data-bs-title="Store uploaded images in browser storage for persistence">Save images to local storage</label>
+                    </div>
+                    <button class="btn btn-outline-info me-2" id="settingsExport"><i class="bi bi-download me-1"></i>Backup (Export CSV)</button>
+                    <button class="btn btn-outline-secondary" id="settingsImport"><i class="bi bi-upload me-1"></i>Restore (Import CSV)</button>
+                    <input type="file" id="settingsImportFile" accept=".csv" class="d-none">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-6">
+                <div class="card">
+                  <div class="card-header fw-semibold">Danger Zone</div>
+                  <div class="card-body">
+                    <p class="text-muted small mb-3">Clear all stored data from this browser.</p>
+                    <button class="btn btn-outline-danger" id="btnClearData"><i class="bi bi-exclamation-triangle me-1"></i>Clear All Data</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Card Detail Modal -->
+  <div class="modal fade" id="cardDetailModal" tabindex="-1" aria-labelledby="cardDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cardDetailModalLabel">Card Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-4">
+              <img id="detailImage" class="img-fluid rounded border" alt="Card image">
+            </div>
+            <div class="col-12 col-md-8">
+              <div class="row">
+                <div class="col-12">
+                  <h5 id="detailName" class="mb-1"></h5>
+                  <p class="text-muted mb-2" id="detailSubtitle"></p>
+                </div>
+                <div class="col-6">
+                  <div class="small text-muted">Type</div>
+                  <div id="detailType" class="fw-semibold"></div>
+                </div>
+                <div class="col-6">
+                  <div class="small text-muted">Rarity</div>
+                  <div id="detailRarity" class="fw-semibold"></div>
+                </div>
+                <div class="col-6">
+                  <div class="small text-muted">Edition</div>
+                  <div id="detailEdition"></div>
+                </div>
+                <div class="col-6">
+                  <div class="small text-muted">Condition</div>
+                  <div id="detailCondition"></div>
+                </div>
+                <div class="col-6">
+                  <div class="small text-muted">Quantity</div>
+                  <div id="detailQuantity"></div>
+                </div>
+                <div class="col-6">
+                  <div class="small text-muted">Unique ID</div>
+                  <div id="detailUniqueId"></div>
+                </div>
+                <div class="col-6">
+                  <div class="small text-muted">Purchase Price</div>
+                  <div id="detailPurchasePrice"></div>
+                </div>
+                <div class="col-6">
+                  <div class="small text-muted">Market Value</div>
+                  <div id="detailMarketValue"></div>
+                </div>
+                <div class="col-12 mt-2">
+                  <div class="small text-muted">Description</div>
+                  <div id="detailDescription"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <div>
+            <button class="btn btn-outline-secondary" id="btnDetailRefreshPrice"><i class="bi bi-arrow-clockwise me-1"></i>Refresh Price</button>
+          </div>
+          <div>
+            <button class="btn btn-outline-danger me-2" id="btnDetailDelete"><i class="bi bi-trash me-1"></i>Delete</button>
+            <button class="btn btn-primary" id="btnDetailEdit"><i class="bi bi-pencil me-1"></i>Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Card Modal -->
+  <div class="modal fade" id="cardFormModal" tabindex="-1" aria-labelledby="cardFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <form class="modal-content needs-validation" id="cardForm" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="cardFormModalLabel">Add Card</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="cardId">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" required>
+              <div class="invalid-feedback">Please enter a name.</div>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Type</label>
+              <select class="form-select" id="type" required>
+                <option value="" selected disabled>Choose...</option>
+                <option>Trading Card</option>
+                <option>Sports Card</option>
+                <option>Game Card</option>
+                <option>Other</option>
+              </select>
+              <div class="invalid-feedback">Type is required.</div>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Rarity</label>
+              <select class="form-select" id="rarity" required>
+                <option value="" selected disabled>Choose...</option>
+                <option>Common</option>
+                <option>Uncommon</option>
+                <option>Rare</option>
+                <option>Ultra Rare</option>
+                <option>Secret Rare</option>
+              </select>
+              <div class="invalid-feedback">Rarity is required.</div>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Set</label>
+              <input type="text" class="form-control" id="set" placeholder="e.g., Base Set">
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Edition</label>
+              <input type="text" class="form-control" id="edition" placeholder="1st Edition">
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Condition</label>
+              <select class="form-select" id="condition">
+                <option>Mint</option>
+                <option>Near Mint</option>
+                <option>Excellent</option>
+                <option>Good</option>
+                <option>Lightly Played</option>
+                <option>Played</option>
+                <option>Poor</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Quantity</label>
+              <input type="number" class="form-control" id="quantity" min="1" value="1" required>
+              <div class="invalid-feedback">Quantity must be at least 1.</div>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label" data-bs-toggle="tooltip" data-bs-title="Unique identifier such as serial number">Unique ID</label>
+              <input type="text" class="form-control" id="uniqueId" placeholder="Serial/ID">
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Barcode</label>
+              <input type="text" class="form-control" id="barcode" placeholder="Barcode">
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Purchase Price</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="purchasePrice" step="0.01" min="0" value="0">
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">Market Value</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="marketValue" step="0.01" min="0" value="0">
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" id="description" rows="2" placeholder="Notes or description..."></textarea>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Image</label>
+              <input type="file" class="form-control" id="image" accept="image/*">
+              <div class="form-text">Optional. PNG/JPG up to ~2MB recommended.</div>
+              <img id="imagePreview" class="img-fluid rounded border mt-2 d-none" alt="Preview">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveCardBtn">Save Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteModalLabel">Delete Card</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete "<span id="deleteTargetName"></span>"? This action cannot be undone.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center py-4 small text-muted">
+    <div>© <span id="year"></span> Card Inventory System · Demo</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  
+</body>
+</html>

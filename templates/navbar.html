@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
+<div class="container-fluid">
+    <button class="btn btn-outline-light me-2 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+    <i class="bi bi-list"></i>
+    </button>
+    <a class="navbar-brand fw-semibold" href="#" data-section="inventorySection">Card Inventory</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" href="#" data-section=  inventorySection">Inventory</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" id="navAddCard" data-bs-toggle="modal" data-bs-target="#cardFormModal">Add Card</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-section="reportsSection">Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-section="settingsSection">Settings</a></li>
+    </ul>
+    <form class="d-flex" role="search">
+        <input class="form-control form-control-sm me-2" id="navbarSearchInput" type="search" placeholder="Search cards..." aria-label="Search">
+        <button class="btn btn-light btn-sm" type="button" id="navbarSearchBtn"><i class="bi bi-search"></i></button>
+    </form>
+    </div>
+</div>
+</nav>
