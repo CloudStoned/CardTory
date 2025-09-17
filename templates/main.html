@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,11 +13,16 @@
 
 <body>
     {% include 'navbar.html' %}
-    {% include 'sidebar.html' %}
-
-    {% block content %}
-    
-    {% endblock %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'sidebar.html' %}
+            <div class="col bg-light p-3">
+                {% block content %}
+                <!-- Page-specific content goes here -->
+                {% endblock %}
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
