@@ -1,5 +1,14 @@
 {% extends 'main.html' %}
 {% block content %}
-    <h1>HELLO WORLD</h1>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Beatae tempora nesciunt mollitia officia reiciendis, placeat dolorum excepturi odio perferendis animi fugiat! Architecto, ex autem. Architecto esse consequatur libero? Sed, dignissimos?</p>
+<div class="container-fluid">
+    <div id="alertsContainer" class="position-relative"></div>
+</div>
+
+<!-- Inventory Section -->
+<section id="inventorySection">
+    <div class="container-fluid">
+    {% include 'toolbar.html' %}
+    {% include 'inventory_table.html' %}
+    </div>
+</section>
 {% endblock %}

@@ -1,0 +1,33 @@
+<!-- Inventory Table -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+    <span class="fw-semibold">Card Inventory</span>
+    <small class="text-muted"><span id="resultCount">0</span> results</small>
+    </div>
+    <div class="table-responsive">
+    <table class="table align-middle mb-0">
+        <thead class="table-light">
+        <tr>
+            <th>Name</th>
+            <th class="d-none d-md-table-cell">Type</th>
+            <th class="d-none d-md-table-cell">Rarity</th>
+            <th class="d-none d-lg-table-cell">Color</th>
+            <th class="text-end d-none d-sm-table-cell">Qty</th>
+        </tr>
+        </thead>
+        <tbody id="cardsTbody">
+        <!-- Rows injected -->
+        </tbody>
+    </table>
+    </div>
+    <div class="card-footer">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div><small class="text-muted">Showing <span id="pageInfo">0-0</span> of <span id="totalItems">0</span></small></div>
+        <nav>
+        <ul class="pagination pagination-sm mb-0" id="pagination">
+            <!-- pages -->
+        </ul>
+        </nav>
+    </div>
+    </div>
+</div>
