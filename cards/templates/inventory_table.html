@@ -13,11 +13,25 @@
                 <th class="d-none d-md-table-cell">Rarity</th>
                 <th class="d-none d-lg-table-cell">Color</th>
                 <th class="d-none d-lg-table-cell">Price</th>
-                <th class="text-end d-none d-sm-table-cell">Qty</th>
+                <th class="d-none d-lg-table-cell">Qty</th>
+                <th class="text-end d-none d-sm-table-cell">Action</th>
             </tr>
             </thead>
             <tbody id="cardsTbody">
-            <!-- Rows injected -->
+                {% for card in cards %}
+                <tr>
+                    <td>{{ card.name }}</td>
+                    <td class="d-none d-md-table-cell">{{ card.get_type_display }}</td>
+                    <td class="d-none d-md-table-cell">{{ card.get_rarity_display }}</td>
+                    <td class="d-none d-lg-table-cell">{{ card.get_color_display }}</td>
+                    <td class="d-none d-lg-table-cell">${{ card.price }}</td>
+                    <td class="text-end d-none d-sm-table-cell">{{ card.quantity }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No cards yet</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
