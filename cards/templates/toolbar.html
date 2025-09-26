@@ -8,69 +8,73 @@
         <label for="mainSearchInput" class="form-label small mb-1">Search</label>
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-search"></i></span>
-          <input type="text" id="mainSearchInput" class="form-control" placeholder="Search by name, edition, ID...">
+          <input type="text" id="mainSearchInput" class="form-control" placeholder="Search" value="{{search_query}}">
         </div>
       </div>
 
       <!-- Type Filter -->
       <div class="col-6 col-md-3 col-xl-2">
         <label for="filterType" class="form-label small mb-1">Type</label>
-        <select id="filterType" class="form-select">
-          <option value="">All</option>
-        </select>
+          <select id="filterType" class="form-select">
+              <option value="">All</option>
+              {% for key, label in CARD_TYPE_CHOICES %}
+                  <option value="{{ key }}" {% if selected_type == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+          </select>
       </div>
 
       <!-- Rarity Filter -->
       <div class="col-6 col-md-3 col-xl-2">
         <label for="filterRarity" class="form-label small mb-1">Rarity</label>
-        <select id="filterRarity" class="form-select">
-          <option value="">All</option>
-        </select>
+          <select id="filterRarity" class="form-select">
+              <option value="">All</option>
+              {% for key, label in RARITY_CHOICES %}
+                  <option value="{{ key }}" {% if selected_rarity == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+          </select>
       </div>
 
       <!-- Color Filter -->
       <div class="col-6 col-md-3 col-xl-2">
         <label for="filterColor" class="form-label small mb-1">Color</label>
-        <select id="filterColor" class="form-select">
-          <option value="">All</option>
-        </select>
+          <select id="filterColor" class="form-select">
+              <option value="">All</option>
+              {% for key, label in COLOR_CHOICES %}
+                  <option value="{{ key }}" {% if selected_color == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+          </select>
       </div>
 
       <!-- Sort By -->
       <div class="col-6 col-md-3 col-xl-2">
         <label for="sortBy" class="form-label small mb-1">Sort</label>
-        <select id="sortBy" class="form-select">
-          <option value="name:asc">Name A-Z</option>
-          <option value="name:desc">Name Z-A</option>
-          <option value="rarity:desc">Rarity High-Low</option>
-          <option value="rarity:asc">Rarity Low-High</option>
-          <option value="marketValue:desc">Value High-Low</option>
-          <option value="marketValue:asc">Value Low-High</option>
-          <option value="quantity:desc">Qty High-Low</option>
-          <option value="quantity:asc">Qty Low-High</option>
-        </select>
+          <select id="sortBy" class="form-select">
+              <option value="name:asc" {% if sort == "name:asc" %}selected{% endif %}>Name A-Z</option>
+              <option value="name:desc" {% if sort == "name:desc" %}selected{% endif %}>Name Z-A</option>
+              <option value="rarity:desc" {% if sort == "rarity:desc" %}selected{% endif %}>Rarity High-Low</option>
+              <option value="rarity:asc" {% if sort == "rarity:asc" %}selected{% endif %}>Rarity Low-High</option>
+              <!-- Add other options similarly -->
+          </select>
       </div>
 
       <!-- Items Per Page -->
       <div class="col-6 col-md-3 col-xl-1">
         <label for="itemsPerPage" class="form-label small mb-1">Per page</label>
-        <select id="itemsPerPage" class="form-select">
-          <option>10</option>
-          <option>25</option>
-          <option>50</option>
-        </select>
+          <select id="itemsPerPage" class="form-select">
+              <option value="10" {% if per_page == "10" %}selected{% endif %}>10</option>
+              <option value="25" {% if per_page == "25" %}selected{% endif %}>25</option>
+              <option value="50" {% if per_page == "50" %}selected{% endif %}>50</option>
+          </select>
       </div>
-
-      <!-- Add Card Button  -->
-      <div class="col-12 d-flex justify-content-start mt-2">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-          <i class="bi bi-plus-lg me-1"></i>Add Card
-        </button>
-      </div>
-      {% include 'partials/add_modal.html' %}
-
+      
 
 
     </div>
   </div>
+</div>
+
+<div class="col-12 d-flex justify-content-start mb-4">
+  <button class="btn btn-primary" id="addCardBtn" data-url="{% url 'add_card' %}">
+      <i class="bi bi-plus-lg me-1"></i> Add Card
+  </button>
 </div>

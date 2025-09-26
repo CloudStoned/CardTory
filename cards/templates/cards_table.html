@@ -1,0 +1,8 @@
+{# cards_table.html - only rows #}
+{% for card in cards %}
+    {% include 'partials/cards_table_row.html' %}
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center text-muted">No cards found</td>
+</tr>
+{% endfor %}

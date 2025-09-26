@@ -11,18 +11,35 @@
 
 <section id="inventorySection">
     <div class="container-fluid">
-        {% include 'toolbar.html' %}
-        {% include 'inventory_table.html' %}
+      {% include 'toolbar.html' %}
+      <table class="table align-middle mb-0">
+          <thead>
+              <tr>
+                  <th>Name</th>
+                  <th class="d-none d-md-table-cell">Type</th>
+                  <th class="d-none d-md-table-cell">Rarity</th>
+                  <th class="d-none d-lg-table-cell">Color</th>
+                  <th class="d-none d-lg-table-cell">Price</th>
+                  <th class="d-none d-lg-table-cell">Qty</th>
+                  <th class="text-end d-none d-sm-table-cell">Action</th>
+              </tr>
+          </thead>
+          <tbody id="cardsTbody">
+              {% include 'cards_table.html' %}
+          </tbody>
+      </table>
     </div>
 </section>
 
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="dynamicModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content" id="editModalContent">
-      <!-- JS will inject form here -->
+    <div class="modal-content" id="dynamicModalContent">
+      <!-- JS will inject the form here -->
     </div>
   </div>
 </div>
 
+
+<script src="{% static 'js/filters.js' %}"></script>
 <script src="{% static 'js/cards_actions.js' %}"></script>
 {% endblock %}
