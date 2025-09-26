@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.http import JsonResponse, HttpResponseNotAllowed
+from django.contrib import messages
 from .forms import CardForm
 from .models import Card
 
@@ -20,6 +21,7 @@ def add_card(request):
         form = CardForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Card Added Successfully")
             return redirect("home")   
         else:
             cards = Card.objects.all().order_by("-id")
@@ -29,11 +31,11 @@ def add_card(request):
 
 def edit_card(request,pk):
     card = get_object_or_404(Card, pk=pk)
-
     if request.method == "POST":
         form = CardForm(request.POST, instance=card)
         if form.is_valid():
             form.save()
+            messages.success(request, "Card Edited Successfully")
             return JsonResponse({"success": True})
     else:
         form = CardForm(instance=card)
@@ -46,5 +48,5 @@ def delete_card(request, pk):
     if request.method == "POST":
         card = get_object_or_404(Card, pk=pk)
         card.delete()
-        return JsonResponse({"success": True})
-    return HttpResponseNotAllowed(["POST"])
+        messages.success(request, "Card Deleted Successfully")
+        return redirect("home")

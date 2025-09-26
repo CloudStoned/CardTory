@@ -5,6 +5,10 @@
     <div id="alertsContainer" class="position-relative"></div>
 </div>
 
+{% for msg in messages %}
+  {{msg}}
+{% endfor %}
+
 <section id="inventorySection">
     <div class="container-fluid">
         {% include 'toolbar.html' %}
@@ -20,6 +24,5 @@
   </div>
 </div>
 
-<script src="{% static 'js/edit.js' %}"></script>
-<script src="{% static 'js/delete.js' %}"></script>
+<script src="{% static 'js/cards_actions.js' %}"></script>
 {% endblock %}
