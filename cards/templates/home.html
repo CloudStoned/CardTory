@@ -1,16 +1,25 @@
 {% extends 'main.html' %}
+{% load static %}
 {% block content %}
 <div class="container-fluid">
     <div id="alertsContainer" class="position-relative"></div>
 </div>
 
-<!-- Inventory Section -->
 <section id="inventorySection">
     <div class="container-fluid">
         {% include 'toolbar.html' %}
         {% include 'inventory_table.html' %}
-        {% include 'partials/add_modal.html' %}
     </div>
 </section>
 
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" id="editModalContent">
+      <!-- JS will inject form here -->
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/edit.js' %}"></script>
+<script src="{% static 'js/delete.js' %}"></script>
 {% endblock %}
