@@ -1,42 +1,32 @@
-function fetchCards(page = 1) {
-    const search = document.querySelector("#mainSearchInput").value;
-    const type = document.querySelector("#filterType").value;
-    const rarity = document.querySelector("#filterRarity").value;
-    const color = document.querySelector("#filterColor").value;
-    const sort = document.querySelector("#sortBy").value;
-    const per_page = document.querySelector("#itemsPerPage").value;
-
-    const params = new URLSearchParams({
-        search,
-        type,
-        rarity,
-        color,
-        sort,
-        per_page,
-        page
-    });
-
-    fetch("/filter_cards?search=abc", { headers: { "X-Requested-With": "XMLHttpRequest" } })
-    .then(res => res.json())
-    .then(data => {
-        // Replace only tbody content
-        document.querySelector("#cardsTbody").innerHTML = data.table_html;
-    });
+function getFilters() {
+    return {
+        search: document.querySelector("#mainSearchInput").value,
+        type: document.querySelector("#filterType").value,
+        rarity: document.querySelector("#filterRarity").value,
+        color: document.querySelector("#filterColor").value,
+        sort: document.querySelector("#sortBy").value,
+        per_page: document.querySelector("#itemsPerPage").value,
+        page: 1
+    };
 }
 
-// Attach event listeners after DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
-    const elements = [
-        "#mainSearchInput",
-        "#filterType",
-        "#filterRarity",
-        "#filterColor",
-        "#sortBy",
-        "#itemsPerPage"
-    ];
+function filterCards() {
+    const params = new URLSearchParams(getFilters()).toString();
 
-    elements.forEach(selector => {
-        const el = document.querySelector(selector);
-        if (el) el.addEventListener(el.tagName === "INPUT" ? "input" : "change", () => fetchCards());
-    });
-});
+    fetch(`/filter_cards/?${params}`, {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.querySelector("#cardsTbody").innerHTML = data.table_html;
+    })
+    .catch(err => console.error(err));
+}
+
+// Attach event listeners
+document.querySelector("#mainSearchInput").addEventListener("input", filterCards);
+document.querySelector("#filterType").addEventListener("change", filterCards);
+document.querySelector("#filterRarity").addEventListener("change", filterCards);
+document.querySelector("#filterColor").addEventListener("change", filterCards);
+document.querySelector("#sortBy").addEventListener("change", filterCards);
+document.querySelector("#itemsPerPage").addEventListener("change", filterCards);

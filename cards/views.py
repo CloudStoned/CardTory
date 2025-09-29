@@ -73,26 +73,3 @@ def add_card(request):
     form = CardForm()
     html = render_to_string("partials/add_form.html", {"form": form}, request)
     return JsonResponse({"html": html})
-
-
-def edit_card(request,pk):
-    card = get_object_or_404(Card, pk=pk)
-    if request.method == "POST":
-        form = CardForm(request.POST, instance=card)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Card Edited Successfully")
-            return JsonResponse({"success": True})
-    else:
-        form = CardForm(instance=card)
-    
-    context = {"form": form, "card": card}
-    html = render_to_string("partials/edit_modal.html", context, request)
-    return JsonResponse({"html":html})
-
-def delete_card(request, pk):
-    if request.method == "POST":
-        card = get_object_or_404(Card, pk=pk)
-        card.delete()
-        messages.success(request, "Card Deleted Successfully")
-        return redirect("home")
