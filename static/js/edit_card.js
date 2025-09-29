@@ -1,22 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const editButtons = document.querySelectorAll(".edit-btn");
     const modal = new bootstrap.Modal(document.getElementById("dynamicModal"));
     const modalContent = document.querySelector("#dynamicModalContent");
 
-    editButtons.forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const url = btn.dataset.url;
+    // Delegate clicks inside the table body
+    document.querySelector("#cardsTbody").addEventListener("click", (e) => {
+        if (e.target.classList.contains("edit-btn")) {
+            const url = e.target.dataset.url;
 
             // GET prefilled form
-            fetch(url, { headers: {"X-Requested-With": "XMLHttpRequest"} })
+            fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } })
                 .then(res => res.json())
                 .then(data => {
                     modalContent.innerHTML = data.html;
                     modal.show();
                     attachFormHandler(url);
                 });
-        });
+        }
     });
 
     function attachFormHandler(url) {
@@ -28,20 +27,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             fetch(url, {
                 method: "POST",
-                headers: {"X-Requested-With": "XMLHttpRequest"},
+                headers: { "X-Requested-With": "XMLHttpRequest" },
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const row = document.querySelector(`#cardRow${data.id}`);
-                    row.outerHTML = data.row_html;
-                    modal.hide();
-                } else {
-                    modalContent.innerHTML = data.html;
-                    attachFormHandler(url);
-                }
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = document.querySelector(`#cardRow${data.id}`);
+                        row.outerHTML = data.row_html;
+                        modal.hide();
+                    } else {
+                        modalContent.innerHTML = data.html;
+                        attachFormHandler(url); // re-attach on failed validation
+                    }
+                });
         });
     }
 });
