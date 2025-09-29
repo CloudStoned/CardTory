@@ -5,5 +5,7 @@
     <td class="d-none d-lg-table-cell">{{ card.get_color_display }}</td>
     <td class="d-none d-lg-table-cell">${{ card.price }}</td>
     <td class="d-none d-lg-table-cell">{{ card.quantity }}</td>
-
+    <td class="text-end d-none d-sm-table-cell">
+        <button class="btn btn-sm btn-warning edit-btn" data-url="{% url 'edit_card' card.pk %}">Edit</button>
+    </td>
 </tr>

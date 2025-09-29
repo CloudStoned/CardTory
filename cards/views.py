@@ -73,3 +73,22 @@ def add_card(request):
     form = CardForm()
     html = render_to_string("partials/add_form.html", {"form": form}, request)
     return JsonResponse({"html": html})
+
+def edit_card(request, id):
+    card = get_object_or_404(Card, pk=id)
+
+    if request.method == "POST":
+        form = CardForm(request.POST, instance=card)
+        if form.is_valid():
+            card = form.save()
+            # Re-render the updated row
+            row_html = render_to_string("partials/cards_table_row.html", {"card": card})
+            return JsonResponse({"success": True, "id": card.id, "row_html": row_html})
+        else:
+            html = render_to_string("partials/edit_form.html", {"form": form}, request=request)
+            return JsonResponse({"success": False, "html": html})
+    else:
+        # GET request → return prefilled form
+        form = CardForm(instance=card)
+        html = render_to_string("partials/edit_form.html", {"form": form}, request=request)
+        return JsonResponse({"success": True, "html": html})
