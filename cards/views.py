@@ -92,3 +92,11 @@ def edit_card(request, id):
         form = CardForm(instance=card)
         html = render_to_string("partials/edit_form.html", {"form": form}, request=request)
         return JsonResponse({"success": True, "html": html})
+    
+def remove_card(request, id):
+    if request.method == "POST":
+        card = get_object_or_404(Card, pk=id)
+        card.delete()
+        return JsonResponse({"success": True, "id": id})
+    else:
+        return JsonResponse({"success": False, "error": "Invalid Request"}, status=400)
