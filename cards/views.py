@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
-from django.contrib import messages
 from django.http import JsonResponse
 from .forms import CardForm
 from .models import Card
+
+from ai.read_image import read_photo
 
 def home(request):
     return render_filtered_cards(request, full_page=True)
@@ -60,7 +61,26 @@ def render_filtered_cards(request, full_page=False):
 
 def add_card(request):
     if request.method == "POST":
-        form = CardForm(request.POST)
+        photo = request.FILES.get("photo")
+        if photo:
+            try:
+                print(f"File name: {photo.name}")
+                print(f"Content type: {photo.content_type}")
+                print(f"File size: {photo.size}")
+                result = read_photo(photo)
+                print(result)  # for debugging
+
+                # Return AI result to frontend
+                return JsonResponse({
+                    "success": True,
+                    "ai_result": result,
+                })
+
+            except Exception as e:
+                return JsonResponse({"success": False, "error": str(e)})
+
+        # Manual form submission
+        form = CardForm(request.POST, request.FILES)  
         if form.is_valid():
             card = form.save()
             row_html = render_to_string("partials/cards_table_row.html", {"card": card})

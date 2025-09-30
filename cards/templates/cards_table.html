@@ -2,7 +2,7 @@
 {% for card in cards %}
     {% include 'partials/cards_table_row.html' %}
 {% empty %}
-<tr>
+<tr id="no-cards-row">
     <td colspan="7" class="text-center text-muted">No cards found</td>
 </tr>
 {% endfor %}

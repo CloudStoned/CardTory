@@ -1,28 +1,34 @@
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".remove-btn").forEach(button => {
-    button.addEventListener("click", function () {
-      if (!confirm("Are you sure you want to remove this card?")) {
-        return; // stop if user cancels
-      }
+  const tbody = document.querySelector("#cardsTbody");
 
-      const url = this.dataset.url; // Django gave us the remove_card URL
-      const row = this.closest("tr"); // grab the row
+  tbody.addEventListener("click", function (e) {
+    if (!e.target.classList.contains("remove-btn")) return;
 
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": getCookie("csrftoken"), // CSRF token required
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            row.remove(); // remove row directly
-          } else {
-            alert("Error: " + data.error);
-          }
-        });
-    });
+    if (!confirm("Are you sure you want to remove this card?")) return;
+
+    const button = e.target;
+    const url = button.dataset.url;
+    const row = button.closest("tr");
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+        "X-Requested-With": "XMLHttpRequest"
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) row.remove();
+            const tbody = document.querySelector("#cardsTbody");
+        if (tbody.children.length === 0) {
+            tbody.innerHTML = `
+                <tr id="no-cards-row">
+                    <td colspan="7" class="text-center text-muted">No cards found</td>
+                </tr>`;
+        }
+        else alert("Error: " + data.error);
+      });
   });
 });
 
