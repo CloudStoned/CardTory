@@ -68,7 +68,7 @@ def add_card(request):
                 print(f"Content type: {photo.content_type}")
                 print(f"File size: {photo.size}")
                 result = read_photo(photo)
-                print(result)  # for debugging
+                print(result)
 
                 # Return AI result to frontend
                 return JsonResponse({
