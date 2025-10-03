@@ -15,6 +15,16 @@ document.addEventListener("change", async function(e) {
 
             const result = await response.json();
             console.log("AI Result:", result);
+
+            if (result.success && result.html) {
+                // Inject prefilled form into modal
+                const modalContent = document.querySelector("#dynamicModalContent");
+                modalContent.innerHTML = result.html;
+
+                // Rebind the form submit handler if needed
+                attachFormHandler("/add/"); // make sure attachFormHandler is defined globally
+            }
+
         } catch (err) {
             console.error("Error uploading photo:", err);
         }

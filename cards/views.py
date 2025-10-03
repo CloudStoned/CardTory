@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from .forms import CardForm
 from .models import Card
 
+import json
+
 from ai.read_image import read_photo
 
 def home(request):
@@ -57,28 +59,24 @@ def render_filtered_cards(request, full_page=False):
 
 def add_card(request):
     if request.method == "POST":
-        photo = request.FILES.get("photo")
-        if photo:
-            try:
-                print(f"File name: {photo.name}")
-                print(f"Content type: {photo.content_type}")
-                print(f"File size: {photo.size}")
-                result = read_photo(photo)
-                
-                card = Card.objects.create(
-                    
-                )
+        # 1️⃣ Photo upload for AI prefill
+        if "photo" in request.FILES:
+            photo = request.FILES["photo"]
+            result_str = read_photo(photo)       
+            result = json.loads(result_str)     
 
-                # Return AI result to frontend
-                return JsonResponse({
-                    "success": True,
-                    "ai_result": result,
-                })
+            form = CardForm(initial={
+                "name": result.get("name"),
+                "card_type": result.get("type", "").lower(), 
+                "color": result.get("color", "").lower(),  
+                "mana_cost": result.get("mana_cost"),
+                "card_description": result.get("card_text"),
+            })
+            
+            html = render_to_string("partials/add_form.html", {"form": form}, request)
+            return JsonResponse({"success": True, "html": html})
 
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)})
-
-        # Manual form submission
+        # 2️⃣ Manual form submission
         form = CardForm(request.POST, request.FILES)  
         if form.is_valid():
             card = form.save()
@@ -88,7 +86,7 @@ def add_card(request):
             html = render_to_string("partials/add_form.html", {"form": form}, request)
             return JsonResponse({"success": False, "html": html})
 
-    # GET request → return JSON with empty form
+    # 3️⃣ GET request → return empty form
     form = CardForm()
     html = render_to_string("partials/add_form.html", {"form": form}, request)
     return JsonResponse({"html": html})
