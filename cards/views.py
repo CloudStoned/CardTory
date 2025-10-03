@@ -16,7 +16,6 @@ def filter_cards(request):
 def render_filtered_cards(request, full_page=False):
     search_query = request.GET.get("search", "")
     card_type = request.GET.get("type", "")
-    rarity = request.GET.get("rarity", "")
     color = request.GET.get("color", "")
     sort = request.GET.get("sort", "name:asc")
     per_page = int(request.GET.get("per_page", 10))
@@ -26,7 +25,6 @@ def render_filtered_cards(request, full_page=False):
         Card.objects
         .search(search_query)
         .of_type(card_type)
-        .of_rarity(rarity)
         .of_color(color)
     )
 
@@ -44,12 +42,10 @@ def render_filtered_cards(request, full_page=False):
         "cards": page_obj,
         "search_query": search_query,
         "selected_type": card_type,
-        "selected_rarity": rarity,
         "selected_color": color,
         "sort": sort,
         "per_page": per_page,
         "CARD_TYPE_CHOICES": Card.CARD_TYPE_CHOICES,
-        "RARITY_CHOICES": Card.RARITY_CHOICES,
         "COLOR_CHOICES": Card.COLOR_CHOICES,
     }
 
@@ -68,7 +64,10 @@ def add_card(request):
                 print(f"Content type: {photo.content_type}")
                 print(f"File size: {photo.size}")
                 result = read_photo(photo)
-                print(result)
+                
+                card = Card.objects.create(
+                    
+                )
 
                 # Return AI result to frontend
                 return JsonResponse({

@@ -23,17 +23,6 @@
           </select>
       </div>
 
-      <!-- Rarity Filter -->
-      <div class="col-6 col-md-3 col-xl-2">
-        <label for="filterRarity" class="form-label small mb-1">Rarity</label>
-          <select id="filterRarity" class="form-select">
-              <option value="">All</option>
-              {% for key, label in RARITY_CHOICES %}
-                  <option value="{{ key }}" {% if selected_rarity == key %}selected{% endif %}>{{ label }}</option>
-              {% endfor %}
-          </select>
-      </div>
-
       <!-- Color Filter -->
       <div class="col-6 col-md-3 col-xl-2">
         <label for="filterColor" class="form-label small mb-1">Color</label>

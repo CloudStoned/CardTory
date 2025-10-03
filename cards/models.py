@@ -6,10 +6,6 @@ class CardQuerySet(models.QuerySet):
             return self.filter(type=type_value)
         return self
     
-    def of_rarity(self, rarity_value):
-        if rarity_value:
-            return self.filter(rarity=rarity_value)  
-        return self
     
     def of_color(self, color_value):
         if color_value:
@@ -31,14 +27,7 @@ class Card(models.Model):
         ("creature", "Creature"),
         ("spell", "Spell"),
         ("artifact", "Artifact"),
-        ("land", "Land"),
-    ]
-
-    RARITY_CHOICES = [
-        ("common", "Common"),
-        ("uncommon", "Uncommon"),
-        ("rare", "Rare"),
-        ("mythic", "Mythic"),
+        ("land", "Land")
     ]
 
     COLOR_CHOICES = [
@@ -51,9 +40,10 @@ class Card(models.Model):
     ]
 
     name = models.CharField(max_length=255)
-    type = models.CharField(max_length=50, choices=CARD_TYPE_CHOICES, blank=True)
-    rarity = models.CharField(max_length=50, choices=RARITY_CHOICES, blank=True)
+    card_type = models.CharField(max_length=50, choices=CARD_TYPE_CHOICES, blank=True)
     color = models.CharField(max_length=50, choices=COLOR_CHOICES, blank=True)
+    mana_cost = models.CharField(max_length=50, blank=True)
+    card_description = models.CharField(max_length=50, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     quantity = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now=True)
